@@ -66,6 +66,12 @@ module spaceship #(
                 x<=x-1;
             else           
 					 x<=x;
+				
+				// boundary check
+				if (x == 600) 
+					 x<=x-1;
+				if (x == 80)
+					 x<=x+1;
 					 
 		  end
     end
