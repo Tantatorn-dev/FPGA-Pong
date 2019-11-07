@@ -28,8 +28,11 @@ module top(
     output wire [4:0] VGA_B,     // 5-bit VGA blue output
 	 
 	 // user input
-	 input wire LEFT_BTN,       
-	 input wire RIGHT_BTN		  
+	 input wire SHOOT_BTN,
+	 input wire LEFT_BTN_1,       
+	 input wire RIGHT_BTN_1,
+	 input wire LEFT_BTN_2,
+	 input wire RIGHT_BTN_2
     );
 
     wire rst = ~RST_BTN;    
@@ -55,27 +58,45 @@ module top(
 		  .o_animate(animate)
     );
   
-	 wire sq_a;
-    wire [11:0] sq_a_x1, sq_a_x2, sq_a_y1, sq_a_y2;  // 12-bit values: 0-4095 
+	 wire paddle_a;
+    wire [11:0] paddle_a_x1, paddle_a_x2, paddle_a_y1, paddle_a_y2;  // 12-bit values: 0-4095 
 	 
-	 spaceship #(.IX(310), .IY(450), .H_SIZE(20)) spaceship_a (
+	 wire paddle_b;
+    wire [11:0] paddle_b_x1, paddle_b_x2, paddle_b_y1, paddle_b_y2;  // 12-bit values: 0-4095 
+	 
+	 paddle #(.IX(310), .IY(450), .H_SIZE(50), .V_SIZE(5)) player_1 (
         .i_clk(CLK), 
         .i_ani_stb(pix_stb),
         .i_rst(rst),
         .i_animate(animate),
-        .o_x1(sq_a_x1),
-        .o_x2(sq_a_x2),
-        .o_y1(sq_a_y1),
-        .o_y2(sq_a_y2),
-		  .i_left_btn(LEFT_BTN),
-		  .i_right_btn(RIGHT_BTN)
+        .o_x1(paddle_a_x1),
+        .o_x2(paddle_a_x2),
+        .o_y1(paddle_a_y1),
+        .o_y2(paddle_a_y2),
+		  .i_left_btn(LEFT_BTN_1),
+		  .i_right_btn(RIGHT_BTN_1)
+    );
+	 
+	 paddle #(.IX(310), .IY(20), .H_SIZE(50), .V_SIZE(5)) player_2 (
+        .i_clk(CLK), 
+        .i_ani_stb(pix_stb),
+        .i_rst(rst),
+        .i_animate(animate),
+        .o_x1(paddle_b_x1),
+        .o_x2(paddle_b_x2),
+        .o_y1(paddle_b_y1),
+        .o_y2(paddle_b_y2),
+		  .i_left_btn(LEFT_BTN_2),
+		  .i_right_btn(RIGHT_BTN_2)
     );
 
-    assign sq_a = ((x > sq_a_x1) & (y > sq_a_y1) &
-        (x < sq_a_x2) & (y < sq_a_y2)) ? 1 : 0;
+    assign paddle_a = ((x > paddle_a_x1) & (y > paddle_a_y1) &
+        (x < paddle_a_x2) & (y < paddle_a_y2)) ? 1 : 0;
+	 assign paddle_b = ((x > paddle_b_x1) & (y > paddle_b_y1) &
+        (x < paddle_b_x2) & (y < paddle_b_y2)) ? 1 : 0;
 
-    assign VGA_R[4:0] = {5{sq_a}};  // square a is red
+    assign VGA_R[4:0] = {5{paddle_a}};  // square a is red
 	 assign VGA_G[5:0] = 6'b0;
-	 assign VGA_B[4:0] = 5'b0;
+	 assign VGA_B[4:0] = {5{paddle_b}};  // square b is blue 
 	 
 endmodule

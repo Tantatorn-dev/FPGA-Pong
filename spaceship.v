@@ -18,8 +18,9 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module spaceship #(
-	 H_SIZE=80,      // half square width (for ease of co-ordinate calculations)
+module paddle #(
+	 H_SIZE=80,      
+	 V_SIZE = 30,
     IX=320,         // initial horizontal position of square centre
     IY=240,         // initial vertical position of square centre
     D_WIDTH=640,    // width of display
@@ -47,8 +48,8 @@ module spaceship #(
 
     assign o_x1 = x - H_SIZE;  // left: centre minus half horizontal size
     assign o_x2 = x + H_SIZE;  // right
-    assign o_y1 = y - H_SIZE;  // top
-    assign o_y2 = y + H_SIZE;  // bottom
+    assign o_y1 = y - V_SIZE;  // top
+    assign o_y2 = y + V_SIZE;  // bottom
 
     always @ (posedge i_clk)
     begin
