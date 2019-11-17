@@ -68,11 +68,16 @@ module ball #(
 				
 				
 				// boundary check
-				if (x == 600) 
-					 x<=x-1;
-				if (x == 80)
-					 x<=x+1;
-					 
+				if (x >= 600 && direction == 6) 
+					 direction = 5;
+				else if (x <= 80  && direction == 5)
+					 direction = 6;
+				else if (x >= 600 && direction == 3) 
+					 direction = 2;
+				else if (x <= 80  && direction == 2)
+					 direction = 3;
+				
+				// direction of a ball
 				if (y >= 435 && x >= i_paddle_a_x && x <= i_paddle_a_x +100 && i_paddle_a_dir == 2) 
 					direction = 4;
 				else if (y >= 435 && x >= i_paddle_a_x && x <= i_paddle_a_x +100 && i_paddle_a_dir == 0) 
