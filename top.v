@@ -62,7 +62,14 @@ module top(
     wire [11:0] paddle_a_x1, paddle_a_x2, paddle_a_y1, paddle_a_y2;  // 12-bit values: 0-4095 
 	 
 	 wire paddle_b;
-    wire [11:0] paddle_b_x1, paddle_b_x2, paddle_b_y1, paddle_b_y2;  // 12-bit values: 0-4095 
+    wire [11:0] paddle_b_x1, paddle_b_x2, paddle_b_y1, paddle_b_y2;  // 12-bit values: 0-4095
+
+	 wire b_is_for_ball;
+    wire [11:0] ball_x1, ball_x2, ball_y1, ball_y2;  // 12-bit values: 0-4095
+	 
+	 // paddle direction
+	 wire [1:0] paddle_a_dir;
+	 wire [1:0] paddle_b_dir;
 	 
 	 paddle #(.IX(310), .IY(450), .H_SIZE(50), .V_SIZE(5)) player_1 (
         .i_clk(CLK), 
@@ -73,6 +80,7 @@ module top(
         .o_x2(paddle_a_x2),
         .o_y1(paddle_a_y1),
         .o_y2(paddle_a_y2),
+		  .o_direction(paddle_a_dir),
 		  .i_left_btn(LEFT_BTN_1),
 		  .i_right_btn(RIGHT_BTN_1)
     );
@@ -86,17 +94,35 @@ module top(
         .o_x2(paddle_b_x2),
         .o_y1(paddle_b_y1),
         .o_y2(paddle_b_y2),
+		  .o_direction(paddle_b_dir),
 		  .i_left_btn(LEFT_BTN_2),
 		  .i_right_btn(RIGHT_BTN_2)
+    );
+	 
+	 ball  ball_1 (
+        .i_clk(CLK), 
+        .i_ani_stb(pix_stb),
+        .i_rst(rst),
+        .i_animate(animate),
+		  .i_paddle_a_x(paddle_a_x1),
+		  .i_paddle_b_x(paddle_b_x1),
+		  .i_paddle_a_dir(paddle_a_dir),
+		  .i_paddle_b_dir(paddle_b_dir),
+        .o_x1(ball_x1),
+        .o_x2(ball_x2),
+        .o_y1(ball_y1),
+        .o_y2(ball_y2)
     );
 
     assign paddle_a = ((x > paddle_a_x1) & (y > paddle_a_y1) &
         (x < paddle_a_x2) & (y < paddle_a_y2)) ? 1 : 0;
 	 assign paddle_b = ((x > paddle_b_x1) & (y > paddle_b_y1) &
         (x < paddle_b_x2) & (y < paddle_b_y2)) ? 1 : 0;
+	 assign b_is_for_ball = ((x > ball_x1) & (y > ball_y1) &
+        (x < ball_x2) & (y < ball_y2)) ? 1 : 0;
 
     assign VGA_R[4:0] = {5{paddle_a}};  // square a is red
-	 assign VGA_G[5:0] = 6'b0;
+	 assign VGA_G[5:0] = {6{b_is_for_ball}};
 	 assign VGA_B[4:0] = {5{paddle_b}};  // square b is blue 
 	 
 endmodule

@@ -40,7 +40,8 @@ module paddle #(
     output wire [11:0] o_x1,  // square left edge: 12-bit value: 0-4095
     output wire [11:0] o_x2,  // square right edge
     output wire [11:0] o_y1,  // square top edge
-    output wire [11:0] o_y2   // square bottom edge
+    output wire [11:0] o_y2,   // square bottom edge
+	 output reg [1:0] o_direction = 2
 	 );
 	 
 	 reg [11:0] x = IX;   // horizontal position of square centre
@@ -62,17 +63,26 @@ module paddle #(
         begin
 				
             if (!i_right_btn && i_left_btn)  // push the right btn
-					 x<=x+1;
+					 o_direction <= 0;
             else if (!i_left_btn && i_right_btn)  // push the left btn
-                x<=x-1;
+                o_direction <= 1;
             else           
-					 x<=x;
+					 o_direction <= 2;
+					 
+				if (o_direction == 0)
+					x<=x+1;
+				else if (o_direction == 1)
+					x<=x-1;
+				else if (o_direction == 2)
+					x<=x;
 				
 				// boundary check
 				if (x == 600) 
 					 x<=x-1;
 				if (x == 80)
 					 x<=x+1;
+					 
+				
 					 
 		  end
     end
