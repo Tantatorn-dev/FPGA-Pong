@@ -64,8 +64,17 @@ module ball #(
             y <= IY;
         end
         if (i_animate && i_ani_stb)
-        begin
-				
+        begin		
+		  
+				// check goal!!!!!!!!!
+				if (y >= 470)
+				begin
+					direction = 7;
+				end
+				else if (y<=10)
+				begin
+					direction = 7;
+				end				
 				
 				// boundary check
 				if (x >= 600 && direction == 6) 
@@ -118,6 +127,12 @@ module ball #(
 				begin
 				y <= y-1;
 				x <= x+1;
+				end
+				else if (direction == 7)  // RESET pos and dir
+				begin
+				x <= IX;
+				y <= IY;
+				direction = 1;
 				end
 					 
 		  end
