@@ -28,11 +28,15 @@ module top(
     output wire [4:0] VGA_B,     // 5-bit VGA blue output
 	 
 	 // user input
-	 input wire SHOOT_BTN,
 	 input wire LEFT_BTN_1,       
 	 input wire RIGHT_BTN_1,
 	 input wire LEFT_BTN_2,
-	 input wire RIGHT_BTN_2
+	 input wire RIGHT_BTN_2,
+	 
+	 // seven segment output
+	 output wire [6:0] SEVEN_SEG_DATA,
+	 output wire [5:0] SEVEN_SEG_COMM
+	
     );
 
     wire rst = ~RST_BTN;    
@@ -46,6 +50,17 @@ module top(
     reg pix_stb;
     always @(posedge CLK)
         {pix_stb, cnt} <= cnt + 16'h8000;  // divide by 4: (2^16)/4 = 0x4000
+
+	// clock divider for 7 segment module ( divide to 200Hz)
+	reg[27:0] counter = 28'd0;
+	parameter DIVISOR = 28'd250000;
+	wire clk_200Hz;
+	always @ (posedge CLK) begin
+		counter <= counter + 28'd1;
+		if(counter >= (DIVISOR-1))
+		counter <= 28'd0;
+	end
+	assign clk_200Hz = (counter<DIVISOR/2)?1'b0:1'b1;
 
     vga640x480 display (
         .i_clk(CLK),
@@ -70,6 +85,14 @@ module top(
 	 // paddle direction
 	 wire [1:0] paddle_a_dir;
 	 wire [1:0] paddle_b_dir;
+	 
+	 // goal wires
+	 wire goal_player_1;
+	 wire goal_player_2;
+	 
+	 // score wires
+	 wire [3:0] score_player_1;
+	 wire [3:0] score_player_2;
 	 
 	 paddle #(.IX(310), .IY(450), .H_SIZE(50), .V_SIZE(5)) player_1 (
         .i_clk(CLK), 
@@ -111,9 +134,26 @@ module top(
         .o_x1(ball_x1),
         .o_x2(ball_x2),
         .o_y1(ball_y1),
-        .o_y2(ball_y2)
+        .o_y2(ball_y2),
+		  .o_goal_player_1(goal_player_1),
+		  .o_goal_player_2(goal_player_2)
     );
-
+	 
+	 scoreboard board (
+		.i_goal_player_1(goal_player_1),
+		.i_goal_player_2(goal_player_2),
+		.o_score_player_1(score_player_1),
+		.o_score_player_2(score_player_2)
+	 );
+	 
+	 display_seven_segment disp_7 (
+		.i_score_player_1(score_player_1),
+		.i_score_player_2(score_player_2),
+		.i_clk_200Hz(clk_200Hz),
+		.o_data(SEVEN_SEG_DATA),
+		.o_comm(SEVEN_SEG_COMM)
+	 );
+	
     assign paddle_a = ((x > paddle_a_x1) & (y > paddle_a_y1) &
         (x < paddle_a_x2) & (y < paddle_a_y2)) ? 1 : 0;
 	 assign paddle_b = ((x > paddle_b_x1) & (y > paddle_b_y1) &

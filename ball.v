@@ -43,7 +43,11 @@ module ball #(
     output wire [11:0] o_x1,  // square left edge: 12-bit value: 0-4095
     output wire [11:0] o_x2,  // square right edge
     output wire [11:0] o_y1,  // square top edge
-    output wire [11:0] o_y2   // square bottom edge
+    output wire [11:0] o_y2,   // square bottom edge
+	 
+	 // goal output !!
+	 output reg o_goal_player_1,
+	 output reg o_goal_player_2
 	 );
 	 
 	 reg [11:0] x = IX;   // horizontal position of ball centre
@@ -54,7 +58,7 @@ module ball #(
     assign o_y1 = y - SIZE;  
     assign o_y2 = y + SIZE;
 	 
-	 reg [2:0] direction = 1;
+	 reg [3:0] direction = 1;
 
     always @ (posedge i_clk)
     begin
@@ -64,14 +68,14 @@ module ball #(
             y <= IY;
         end
         if (i_animate && i_ani_stb)
-        begin		
+        begin
 		  
 				// check goal!!!!!!!!!
-				if (y >= 470)
+				if (y == 470)
 				begin
-					direction = 7;
+					direction = 8;
 				end
-				else if (y<=10)
+				else if (y==10)
 				begin
 					direction = 7;
 				end				
@@ -102,37 +106,59 @@ module ball #(
 					 
 				if (direction == 1) // S
 				begin
+				o_goal_player_1 = 0;
+				o_goal_player_2 = 0;
 				y<= y+1; 
 				end
 				else if (direction == 2) // SW
 				begin
+				o_goal_player_1 = 0;
+				o_goal_player_2 = 0;
 				y <= y+1;
 				x <= x-1;
 				end
 				else if (direction == 3) // SE
 				begin
+				o_goal_player_1 = 0;
+				o_goal_player_2 = 0;
 				y <= y+1;
 				x <= x+1;
 				end
 				else if (direction == 4) // N
 				begin
+				o_goal_player_1 = 0;
+				o_goal_player_2 = 0;
 				y<= y-1; 
 				end
 				else if (direction == 5) // NW
 				begin
+				o_goal_player_1 = 0;
+				o_goal_player_2 = 0;
 				y <= y-1;
 				x <= x-1;
 				end
 				else if (direction == 6) // NE
 				begin
+				o_goal_player_1 = 0;
+				o_goal_player_2 = 0;
 				y <= y-1;
 				x <= x+1;
 				end
 				else if (direction == 7)  // RESET pos and dir
 				begin
+				o_goal_player_1 = 1;
+				o_goal_player_2 = 0;
 				x <= IX;
 				y <= IY;
 				direction = 1;
+				end
+				else if (direction == 8) // same same with above
+				begin
+				o_goal_player_1 = 0;
+				o_goal_player_2 = 1;
+				x <= IX;
+				y <= IY;
+				direction = 4;
 				end
 					 
 		  end
