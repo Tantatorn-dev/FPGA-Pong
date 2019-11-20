@@ -36,7 +36,7 @@ module decimal_to_seven_segment(
 			7: o_seven_segment <= 7'b1110000;
 			8: o_seven_segment <= 7'b1111111;
 			9: o_seven_segment <= 7'b1111011;
-			default: o_seven_segment <= !7'b0000000;
+			default: o_seven_segment <= 7'b0000000;
 		endcase
 	 end
 

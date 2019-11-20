@@ -33,6 +33,11 @@ module top(
 	 input wire LEFT_BTN_2,
 	 input wire RIGHT_BTN_2,
 	 
+	 input wire LEFT_JOYCON_1,
+	 input wire RIGHT_JOYCON_1,
+	 input wire LEFT_JOYCON_2,
+	 input wire RIGHT_JOYCON_2,
+	 
 	 // seven segment output
 	 output wire [6:0] SEVEN_SEG_DATA,
 	 output wire [5:0] SEVEN_SEG_COMM
@@ -104,8 +109,8 @@ module top(
         .o_y1(paddle_a_y1),
         .o_y2(paddle_a_y2),
 		  .o_direction(paddle_a_dir),
-		  .i_left_btn(LEFT_BTN_1),
-		  .i_right_btn(RIGHT_BTN_1)
+		  .i_left_btn(LEFT_JOYCON_1),
+		  .i_right_btn(RIGHT_JOYCON_1)
     );
 	 
 	 paddle #(.IX(310), .IY(20), .H_SIZE(50), .V_SIZE(5)) player_2 (
@@ -118,8 +123,8 @@ module top(
         .o_y1(paddle_b_y1),
         .o_y2(paddle_b_y2),
 		  .o_direction(paddle_b_dir),
-		  .i_left_btn(LEFT_BTN_2),
-		  .i_right_btn(RIGHT_BTN_2)
+		  .i_left_btn(LEFT_JOYCON_2),
+		  .i_right_btn(RIGHT_JOYCON_2)
     );
 	 
 	 ball  ball_1 (
