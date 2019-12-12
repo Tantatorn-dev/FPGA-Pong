@@ -35,8 +35,12 @@ module top(
 	 
 	 input wire LEFT_JOYCON_1,
 	 input wire RIGHT_JOYCON_1,
+	 input wire UP_JOYCON_1,
+	 input wire DOWN_JOYCON_1,
 	 input wire LEFT_JOYCON_2,
 	 input wire RIGHT_JOYCON_2,
+	 input wire UP_JOYCON_2,
+	 input wire DOWN_JOYCON_2,
 	 
 	 // seven segment output
 	 output wire [6:0] SEVEN_SEG_DATA,
@@ -68,17 +72,6 @@ module top(
 		counter <= 28'd0;
 	end
 	assign clk_200Hz = (counter<DIVISOR/2)?1'b0:1'b1;
-	
-	// clock divider for scoreboard module ( divide to 10Hz)
-	reg[27:0] counter_2 = 28'd0;
-	parameter DIVISOR_2 = 28'd25000000;
-	wire clk_10Hz;
-	always @ (posedge CLK) begin
-		counter_2 <= counter_2 + 28'd1;
-		if(counter_2 >= (DIVISOR_2-1))
-		counter_2 <= 28'd0;
-	end
-	assign clk_10Hz = (counter_2<DIVISOR_2/2)?1'b0:1'b1;
 
     vga640x480 display (
         .i_clk(CLK),
@@ -123,7 +116,9 @@ module top(
         .o_y2(paddle_a_y2),
 		  .o_direction(paddle_a_dir),
 		  .i_left_btn(LEFT_JOYCON_1),
-		  .i_right_btn(RIGHT_JOYCON_1)
+		  .i_right_btn(RIGHT_JOYCON_1),
+		  .i_up_btn(UP_JOYCON_1),
+		  .i_down_btn(DOWN_JOYCON_1)
     );
 	 
 	 paddle #(.IX(310), .IY(20), .H_SIZE(50), .V_SIZE(5)) player_2 (
@@ -137,7 +132,9 @@ module top(
         .o_y2(paddle_b_y2),
 		  .o_direction(paddle_b_dir),
 		  .i_left_btn(LEFT_JOYCON_2),
-		  .i_right_btn(RIGHT_JOYCON_2)
+		  .i_right_btn(RIGHT_JOYCON_2),
+		  .i_up_btn(UP_JOYCON_2),
+		  .i_down_btn(DOWN_JOYCON_2)
     );
 	 
 	 ball  ball_1 (

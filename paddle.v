@@ -35,6 +35,8 @@ module paddle #(
 	 // user input
 	 input wire i_left_btn,      
 	 input wire i_right_btn, 
+	 input wire i_up_btn,
+	 input wire i_down_btn,
 	
 	 // output
     output wire [11:0] o_x1,  // square left edge: 12-bit value: 0-4095
@@ -51,6 +53,8 @@ module paddle #(
     assign o_x2 = x + H_SIZE;  // right
     assign o_y1 = y - V_SIZE;  // top
     assign o_y2 = y + V_SIZE;  // bottom
+	 
+	 reg [2:0] speed = 1;
 
     always @ (posedge i_clk)
     begin
@@ -69,17 +73,30 @@ module paddle #(
             else           
 					 o_direction <= 2;
 					 
+				if (!i_up_btn && i_down_btn)
+					if (speed == 7)
+					speed = 6;
+					else
+					speed = speed + 1;
+				else if (i_up_btn && !i_down_btn)
+					if (speed <= 0)
+					speed = 1;
+					else
+					speed = speed - 1;
+					 
+					
+					 
 				if (o_direction == 0)
-					x<=x+1;
+					x<=x+speed;
 				else if (o_direction == 1)
-					x<=x-1;
+					x<=x-speed;
 				else if (o_direction == 2)
 					x<=x;
 				
 				// boundary check
-				if (x == 600) 
+				if (x >= 600) 
 					 x<=x-1;
-				if (x == 80)
+				if (x <= 80)
 					 x<=x+1;
 					 
 				
