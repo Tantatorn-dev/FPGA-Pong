@@ -74,11 +74,11 @@ module ball #(
         begin
 		  
 				// check goal!!!!!!!!!
-				if (y == 470)
+				if (y >= 470)
 				begin
 					direction = 8;
 				end
-				else if (y==10)
+				else if (y<=10)
 				begin
 					direction = 7;
 				end				
@@ -111,41 +111,41 @@ module ball #(
 				begin
 				o_goal_player_1 = 0;
 				o_goal_player_2 = 0;
-				y<= y+1; 
+				y<= y+3; 
 				end
 				else if (direction == 2) // SW
 				begin
 				o_goal_player_1 = 0;
 				o_goal_player_2 = 0;
-				y <= y+1;
-				x <= x-1;
+				y <= y+3;
+				x <= x-3;
 				end
 				else if (direction == 3) // SE
 				begin
 				o_goal_player_1 = 0;
 				o_goal_player_2 = 0;
-				y <= y+1;
-				x <= x+1;
+				y <= y+3;
+				x <= x+3;
 				end
 				else if (direction == 4) // N
 				begin
 				o_goal_player_1 = 0;
 				o_goal_player_2 = 0;
-				y<= y-1; 
+				y<= y-3; 
 				end
 				else if (direction == 5) // NW
 				begin
 				o_goal_player_1 = 0;
 				o_goal_player_2 = 0;
-				y <= y-1;
-				x <= x-1;
+				y <= y-3;
+				x <= x-3;
 				end
 				else if (direction == 6) // NE
 				begin
 				o_goal_player_1 = 0;
 				o_goal_player_2 = 0;
-				y <= y-1;
-				x <= x+1;
+				y <= y-3;
+				x <= x+3;
 				end
 				else if (direction == 7)  // RESET pos and dir
 				begin
