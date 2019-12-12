@@ -47,7 +47,10 @@ module ball #(
 	 
 	 // goal output !!
 	 output reg o_goal_player_1,
-	 output reg o_goal_player_2
+	 output reg o_goal_player_2,
+	 
+	 output reg [3:0] o_score_player_1 = 0,
+	 output reg [3:0] o_score_player_2 = 0
 	 );
 	 
 	 reg [11:0] x = IX;   // horizontal position of ball centre
@@ -151,6 +154,14 @@ module ball #(
 				x <= IX;
 				y <= IY;
 				direction = 1;
+				
+				if (o_score_player_1 == 5)
+				begin
+				o_score_player_1 = 0;
+				o_score_player_2 = 0;
+				end
+				else
+				o_score_player_1 = o_score_player_1 + 1;
 				end
 				else if (direction == 8) // same same with above
 				begin
@@ -159,8 +170,17 @@ module ball #(
 				x <= IX;
 				y <= IY;
 				direction = 4;
+				
+				if (o_score_player_2 == 5)
+				begin
+				o_score_player_1 = 0;
+				o_score_player_2 = 0;
 				end
-					 
+				else
+				o_score_player_2 = o_score_player_2 + 1;
+				
+				end
+								 
 		  end
     end
 	 

@@ -41,6 +41,8 @@ module top(
 	 // seven segment output
 	 output wire [6:0] SEVEN_SEG_DATA,
 	 output wire [5:0] SEVEN_SEG_COMM
+	 
+	 
 	
     );
 
@@ -66,6 +68,17 @@ module top(
 		counter <= 28'd0;
 	end
 	assign clk_200Hz = (counter<DIVISOR/2)?1'b0:1'b1;
+	
+	// clock divider for scoreboard module ( divide to 10Hz)
+	reg[27:0] counter_2 = 28'd0;
+	parameter DIVISOR_2 = 28'd25000000;
+	wire clk_10Hz;
+	always @ (posedge CLK) begin
+		counter_2 <= counter_2 + 28'd1;
+		if(counter_2 >= (DIVISOR_2-1))
+		counter_2 <= 28'd0;
+	end
+	assign clk_10Hz = (counter_2<DIVISOR_2/2)?1'b0:1'b1;
 
     vga640x480 display (
         .i_clk(CLK),
@@ -141,15 +154,10 @@ module top(
         .o_y1(ball_y1),
         .o_y2(ball_y2),
 		  .o_goal_player_1(goal_player_1),
-		  .o_goal_player_2(goal_player_2)
+		  .o_goal_player_2(goal_player_2),
+		  .o_score_player_1(score_player_1),
+		  .o_score_player_2(score_player_2)
     );
-	 
-	 scoreboard board (
-		.i_goal_player_1(goal_player_1),
-		.i_goal_player_2(goal_player_2),
-		.o_score_player_1(score_player_1),
-		.o_score_player_2(score_player_2)
-	 );
 	 
 	 display_seven_segment disp_7 (
 		.i_score_player_1(score_player_1),
@@ -165,6 +173,7 @@ module top(
         (x < paddle_b_x2) & (y < paddle_b_y2)) ? 1 : 0;
 	 assign b_is_for_ball = ((x > ball_x1) & (y > ball_y1) &
         (x < ball_x2) & (y < ball_y2)) ? 1 : 0;
+		  
 
     assign VGA_R[4:0] = {5{paddle_a}};  // square a is red
 	 assign VGA_G[5:0] = {6{b_is_for_ball}};
