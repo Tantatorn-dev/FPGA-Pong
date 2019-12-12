@@ -68,17 +68,6 @@ module top(
 		counter <= 28'd0;
 	end
 	assign clk_200Hz = (counter<DIVISOR/2)?1'b0:1'b1;
-	
-	// clock divider for scoreboard module ( divide to 10Hz)
-	reg[27:0] counter_2 = 28'd0;
-	parameter DIVISOR_2 = 28'd25000000;
-	wire clk_10Hz;
-	always @ (posedge CLK) begin
-		counter_2 <= counter_2 + 28'd1;
-		if(counter_2 >= (DIVISOR_2-1))
-		counter_2 <= 28'd0;
-	end
-	assign clk_10Hz = (counter_2<DIVISOR_2/2)?1'b0:1'b1;
 
     vga640x480 display (
         .i_clk(CLK),
